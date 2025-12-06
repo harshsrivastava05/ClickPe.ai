@@ -57,10 +57,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.refresh(); // Refresh server components
     };
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
         setUser(null);
-        // Clear cookie by expiring it
-        document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         router.push('/auth/signin');
         router.refresh();
     };
