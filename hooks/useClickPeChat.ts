@@ -99,7 +99,6 @@ export function useClickPeChat({ api, productId, initialMessages = [] }: UseClic
       if (err.name !== 'AbortError') {
         setError(err);
         console.error('Chat error:', err);
-        // Optionally remove the empty assistant message or show an error state in it
       }
     } finally {
       setIsLoading(false);

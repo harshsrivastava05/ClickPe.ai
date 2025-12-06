@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
   } catch (error) {
     if (error instanceof z.ZodError) {
-        return new Response(JSON.stringify(error.errors), { status: 400 });
+        return new Response(JSON.stringify(error.issues), { status: 400 });
     }
     console.error('Signup Error:', error);
     return new Response('Internal Server Error', { status: 500 });
