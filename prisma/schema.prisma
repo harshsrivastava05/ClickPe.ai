@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                 String   @id @default(uuid())
+  name               String
+  bank               String
+  type               String   // personal, education, vehicle, home, credit_line, debt_consolidation
+  rate_apr           Decimal
+  min_income         Decimal
+  min_credit_score   Int
+  tenure_min_months  Int      @default(6)
+  tenure_max_months  Int      @default(60)
+  processing_fee_pct Decimal  @default(0)
+  prepayment_allowed Boolean  @default(true)
+  disbursal_speed    String   @default("standard")
+  docs_level         String   @default("standard")
+  summary            String?
+  faq                String   @default("[]") // Using String to avoid potential SQLite Json version issues, we will JSON.parse in app
+  terms              String   @default("{}") // Using String
+  clauses            String   @default("")
+
+  chats              ChatMessage[]
+
+  @@map("products")
+}
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  display_name   String?
+  password       String?
+  pan            String?
+  monthly_income Decimal?
+  credit_score   Int?
+  chats          ChatMessage[]
+
+  @@map("users")
+}
+
+model ChatMessage {
+  id         String   @id @default(uuid())
+  user_id    String?
+  user       User?    @relation(fields: [user_id], references: [id])
+  product_id String?
+  product    Product? @relation(fields: [product_id], references: [id])
+  role       String   // user, assistant
+  content    String
+  created_at DateTime @default(now())
+
+  @@map("ai_chat_messages")
+}
